@@ -99,6 +99,26 @@ static void aout_set_playback_volume(SDL_Aout *aout, float volume)
     [opaque->aoutController setPlaybackVolume:volume];
 }
 
+static void aout_set_equalizer(SDL_Aout *aout, float listEQ[])
+{
+    SDLTRACE("aout_set_equalizer()\n");
+    SDL_Aout_Opaque *opaque = aout->opaque;
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (int i = 0; i < 10; i++) {
+        array[i] = [NSNumber numberWithFloat:listEQ[i]];
+    }
+
+    [opaque->aoutController setListEQ:array];
+}
+
+static void aout_set_equalizer_value(SDL_Aout *aout, float value, int bandTag)
+{
+    SDLTRACE("aout_set_equalizer_value(%d)\n", bandTag);
+    SDL_Aout_Opaque *opaque = aout->opaque;
+
+    [opaque->aoutController setEqualizerValue:value forBand:bandTag];
+}
+
 static double auout_get_latency_seconds(SDL_Aout *aout)
 {
     SDL_Aout_Opaque *opaque = aout->opaque;
@@ -139,7 +159,8 @@ SDL_Aout *SDL_AoutIos_CreateForAudioUnit()
     aout->pause_audio = aout_pause_audio;
     aout->flush_audio = aout_flush_audio;
     aout->close_audio = aout_close_audio;
-
+    aout->func_set_equalizer = aout_set_equalizer;
+    aout->func_set_equalizer_value = aout_set_equalizer_value;
     aout->func_set_playback_rate = aout_set_playback_rate;
     aout->func_set_playback_volume = aout_set_playback_volume;
     aout->func_get_latency_seconds = auout_get_latency_seconds;

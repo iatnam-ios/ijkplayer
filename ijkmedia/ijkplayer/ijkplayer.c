@@ -234,6 +234,20 @@ void ijkmp_set_playback_volume(IjkMediaPlayer *mp, float volume)
     MPTRACE("%s()=void\n", __func__);
 }
 
+void ijkmp_set_equalizer(IjkMediaPlayer *mp, float listEQ[])
+{
+    assert(mp);
+    
+    ffp_set_equalizer(mp->ffplayer, listEQ);
+}
+
+void ijkmp_set_equalizer_value(IjkMediaPlayer *mp, float value, int bandTag)
+{
+    assert(mp);
+    
+    ffp_set_equalizer_value(mp->ffplayer, value, bandTag);
+}
+
 int ijkmp_set_stream_selected(IjkMediaPlayer *mp, int stream, int selected)
 {
     assert(mp);

@@ -4171,6 +4171,22 @@ void ffp_set_option_int(FFPlayer *ffp, int opt_category, const char *name, int64
     AVDictionary **dict = ffp_get_opt_dict(ffp, opt_category);
     av_dict_set_int(dict, name, value, 0);
 }
+            
+void ffp_set_equalizer(FFPlayer *ffp, float listEQ[])
+{
+    if(!ffp)
+        return;
+                
+    SDL_AoutSetEqualizer(ffp->aout, listEQ);
+}
+                        
+void ffp_set_equalizer_value(FFPlayer *ffp, float value, int bandTag)
+{
+    if(!ffp)
+        return;
+                            
+    SDL_AoutSetEqualizerValue(ffp->aout, value, bandTag);
+}
 
 void ffp_set_overlay_format(FFPlayer *ffp, int chroma_fourcc)
 {

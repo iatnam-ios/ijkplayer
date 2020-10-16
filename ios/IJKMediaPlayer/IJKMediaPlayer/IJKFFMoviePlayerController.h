@@ -108,6 +108,9 @@ typedef enum IJKLogLevel {
 @property(nonatomic, readonly) CGFloat fpsInMeta;
 @property(nonatomic, readonly) CGFloat fpsAtOutput;
 @property(nonatomic) BOOL shouldShowHudView;
+@property(nonatomic) NSArray *listEQ;
+
+- (void)setEqualizerValue:(float)value forBand:(NSInteger)bandTag;
 
 - (void)setOptionValue:(NSString *)value
                 forKey:(NSString *)key

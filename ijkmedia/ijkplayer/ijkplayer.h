@@ -174,6 +174,8 @@ int             ijkmp_get_video_codec_info(IjkMediaPlayer *mp, char **codec_info
 int             ijkmp_get_audio_codec_info(IjkMediaPlayer *mp, char **codec_info);
 void            ijkmp_set_playback_rate(IjkMediaPlayer *mp, float rate);
 void            ijkmp_set_playback_volume(IjkMediaPlayer *mp, float rate);
+void            ijkmp_set_equalizer(IjkMediaPlayer *mp, float listEQ[]);
+void            ijkmp_set_equalizer_value(IjkMediaPlayer *mp, float value, int bandTag);
 
 int             ijkmp_set_stream_selected(IjkMediaPlayer *mp, int stream, int selected);
 

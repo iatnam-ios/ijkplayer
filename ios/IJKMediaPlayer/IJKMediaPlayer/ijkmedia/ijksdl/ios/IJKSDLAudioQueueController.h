@@ -38,6 +38,8 @@
 - (void)close;
 - (void)setPlaybackRate:(float)playbackRate;
 - (void)setPlaybackVolume:(float)playbackVolume;
+- (void)setEqualizerValue:(float)value forBand:(int)bandTag;
+- (void)setListEQ:(NSArray *)listEQ;
 - (double)get_latency_seconds;
 
 @property (nonatomic, readonly) SDL_AudioSpec spec;

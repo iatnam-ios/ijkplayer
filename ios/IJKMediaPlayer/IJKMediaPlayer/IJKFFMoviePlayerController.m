@@ -211,33 +211,6 @@ void IJKFFIOStatCompleteRegister(void (*cb)(const char *url,
         ijkmp_set_inject_opaque(_mediaPlayer, (__bridge_retained void *) weakHolder);
         ijkmp_set_ijkio_inject_opaque(_mediaPlayer, (__bridge_retained void *)weakHolder);
         ijkmp_set_option_int(_mediaPlayer, IJKMP_OPT_CATEGORY_PLAYER, "start-on-prepared", _shouldAutoplay ? 1 : 0);
-
-        // init video sink
-        _glView = [[IJKSDLGLView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-        _glView.isThirdGLView = NO;
-        _view = _glView;
-        _hudViewController = [[IJKSDLHudViewController alloc] init];
-        [_hudViewController setRect:_glView.frame];
-        _shouldShowHudView = NO;
-        _hudViewController.tableView.hidden = YES;
-        [_view addSubview:_hudViewController.tableView];
-
-        [self setHudValue:nil forKey:@"scheme"];
-        [self setHudValue:nil forKey:@"host"];
-        [self setHudValue:nil forKey:@"path"];
-        [self setHudValue:nil forKey:@"ip"];
-        [self setHudValue:nil forKey:@"tcp-info"];
-        [self setHudValue:nil forKey:@"http"];
-        [self setHudValue:nil forKey:@"tcp-spd"];
-        [self setHudValue:nil forKey:@"t-prepared"];
-        [self setHudValue:nil forKey:@"t-render"];
-        [self setHudValue:nil forKey:@"t-preroll"];
-        [self setHudValue:nil forKey:@"t-http-open"];
-        [self setHudValue:nil forKey:@"t-http-seek"];
-        
-        self.shouldShowHudView = options.showHudView;
-
-        ijkmp_ios_set_glview(_mediaPlayer, _glView);
         ijkmp_set_option(_mediaPlayer, IJKMP_OPT_CATEGORY_PLAYER, "overlay-format", "fcc-_es2");
 #ifdef DEBUG
         [IJKFFMoviePlayerController setLogLevel:k_IJK_LOG_DEBUG];
@@ -485,6 +458,35 @@ inline static int getPlayerOption(IJKFFOptionCategory category)
     return mp_category;
 }
 
+- (void)setListEQ:(NSArray *)listEQ
+{
+    _listEQ = listEQ;
+    if (!_mediaPlayer)
+        return;
+    
+    int numberBands = (int)listEQ.count;
+    if (numberBands != 10) {
+        return;
+    }
+    
+    float array[numberBands];
+    for (int i = 0; i < numberBands; i++) {
+        array[i] = [[listEQ objectAtIndex:i] floatValue];
+    }
+    
+    ijkmp_set_equalizer(_mediaPlayer, array);
+}
+
+- (void)setEqualizerValue:(float)value forBand:(NSInteger)bandTag
+{
+    if (!_mediaPlayer)
+        return;
+    
+    int band = (int)bandTag;
+    
+    ijkmp_set_equalizer_value(_mediaPlayer, value, band);
+}
+
 - (void)setOptionValue:(NSString *)value
                 forKey:(NSString *)key
             ofCategory:(IJKFFOptionCategory)category
@@ -526,14 +528,6 @@ inline static int getPlayerOption(IJKFFOptionCategory category)
     } else {
         NSString *message = [NSString stringWithFormat:@"actual: %s\n expect: %s\n", actualVersion, expectVersion];
         NSLog(@"\n!!!!!!!!!!\n%@\n!!!!!!!!!!\n", message);
-        if (showAlert) {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unexpected FFmpeg version"
-                                                                message:message
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
-        }
         return NO;
     }
 }
@@ -549,12 +543,7 @@ inline static int getPlayerOption(IJKFFOptionCategory category)
         if (showAlert) {
             NSString *message = [NSString stringWithFormat:@"actual: %s\n expect: %s\n",
                                  actualVersion, expectVersion];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Unexpected ijkplayer version"
-                                                                message:message
-                                                               delegate:nil
-                                                      cancelButtonTitle:@"OK"
-                                                      otherButtonTitles:nil];
-            [alertView show];
+            NSLog(@"\n!!!!!!!!!!\n%@\n!!!!!!!!!!\n", message);
         }
         return NO;
     }

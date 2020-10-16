@@ -114,6 +114,22 @@ void SDL_AoutSetPlaybackVolume(SDL_Aout *aout, float volume)
     }
 }
 
+void SDL_AoutSetEqualizer(SDL_Aout *aout, float listEQ[])
+{
+    if (aout) {
+        if (aout->func_set_equalizer)
+            aout->func_set_equalizer(aout, listEQ);
+    }
+}
+
+void SDL_AoutSetEqualizerValue(SDL_Aout *aout, float value, int bandTag)
+{
+    if (aout) {
+        if (aout->func_set_equalizer_value)
+            aout->func_set_equalizer_value(aout, value, bandTag);
+    }
+}
+
 int SDL_AoutGetAudioSessionId(SDL_Aout *aout)
 {
     if (aout) {
